@@ -1,6 +1,6 @@
 # 9/29
 
-## Video Recordings
+## Recordings
 
 `09_17_2019` and `09_19_2019`
 
@@ -98,3 +98,31 @@ int f(int x) {
 ```
 
 When recursion goes deeper, stack goes down. When recursion returns, stack goes up. Print `x` and `&x` to see the change of stack.
+
+
+
+# 10/1
+
+## Recordings
+
+`09_24_2019`
+
+- `NULL` pointer - 04
+
+  - In header files, `#define NULL ((void *) 0)`, so that `NULL + 1` is illegal
+
+- Arrays - 05
+
+  - `sizeof()` returns **byte** size
+
+  - Theorem #1: `*(p + 1) == a[1]`
+  - C allows a pointer to the next address to the last element of the array
+  - Theorem #2: array name, in most cases, is the address of its first element: `a => &a[0]`
+    - Exception 1: `sizeof(a)` is the byte size of the whole array
+    - Exception 2: `a++` is illegal
+  - Theorem #3 (generalize of the previous 2): `*(x + y) == x[y]`
+  - `0[a] => *(0 + a) <=> *(a + 0) <=> a[0]`
+
+- Heap - 05
+
+  - Purpose: share address among functions
