@@ -193,3 +193,154 @@ When recursion goes deeper, stack goes down. When recursion returns, stack goes 
 
 
 
+# 10/13
+
+## `struct`
+
+- `sizeof(struct)` may be bigger than sum of  `sizeof()`all its individual components
+
+  ```c
+  struct Pt { int x; double y; };
+  struct Pt p1 = { 1, 2.2 };
+  sizeof(p1) == 16; // on most Intel CPUs
+  ```
+
+
+
+## Linked List
+
+- Should not use `assert()` in labs
+
+
+
+# 10/22
+
+- `fprintf(stdout)` is the same as `printf()`
+- Opaque pointer: `FILE *` meant to be hold what is returned by functions such as `fopen()`, and be passed to other functions
+  - Content pointed by opaque pointers are implementation-dependent: OS or standard libraries
+- `stderr`, `stdout` and `stdin` are global variables of type `FILE *`. They represent standard [input, output, error]. When redirection is specified, they might come from actual files
+
+
+
+# 10/27
+
+Experiments:
+
+- incompatible `sscanf()`: might be ok
+
+
+
+# 11/5
+
+## Reading/Writing Binary Files
+
+- All files are just a sequence of bytes. But the bytes in text files are human readable
+- Lines stored differently in Windows and Unix:
+  - Unix: `'h','e', 'l', 'l', 'o', '\n'`
+  - Windows: `'h','e', 'l', 'l', 'o', '\r', '\n'`
+  - Translation of `fgets` and `fputs` is default. Suppress them using `rb` and `wb`
+  - Use `b` for binary files and no `b` for text files to make your program portable
+
+
+
+## Numeric IDs in UNIX
+
+Show User ID and Group ID for files
+
+```
+ll -n
+```
+
+List PIDs
+
+```
+ps
+```
+
+Get the process tree
+
+```
+ps auf | grep UNI
+```
+
+
+
+## `fork()` and `exec()`
+
+- `fork()` returns:
+  - Parent: new PID of the **child**
+  - Child: 0
+  - Memorizing hint: `fork()` never returns the process's own PID
+
+- `fork()` copies the whole process. Heap allocation must be freed in both parent and child processes.
+
+
+
+# 11/10
+
+## Recordings
+
+- `netcat`
+
+  - Run in server mode: `nc -l [port]`
+  - client: `nc [ip] [port]`
+
+- Turn `mdb-lookup` into server
+
+  - Reading from **file** is different from reading from **pipe**
+  - `mkfifo` creates a named pipe. Same functionality as `|` except it creates an entry in the directory
+  - `./mdb-lookup < mypipe | netcat -l 10000 > mypipe`, or `cat mypipe | ./mdb-lookup | netcat -l 10000 > mypipe`
+
+  <img src="./mdb-server.jpg" alt="mdb server" style="zoom:50%;" />
+
+
+# 11/12
+
+- socket API allows implementing similar functions like `netcat`, instead of using it
+
+## Unix I/O
+
+- `open()` is unix-based, as opposed to `fopen()`, which is part of C library and is cross platform
+
+
+
+## Endian
+
+- Intel CPU reverses byte order -- little endian
+- Network order is big endian. `htonl()` converts the storing order to big endian, whatever the input is
+  - host order: depends on the host
+  - `ntohl()` does the reverse
+  - Only matters if stored in raw integer. Today's system also uses `json` and `xml`
+
+
+
+# 11/17
+
+- Use of `sockaddr`: think of `sockaddr_in` as its sub-class
+  - Inside connect, if `sin_family` is `AF_INET`, it will be casted back to `sockaddr_in`
+  - `sockaddr` of IPV6 may expand beyond 16 bytes, so it is required to pass `sizeof(servaddr)` to `connect()`
+- TCP does not preserve the boundary: need to receive multiple times
+- `INADDR_ANY` is `0.0.0.0`: any network interface for the local server (IP address could different for WIFI/ethernet/USB interfaces)
+
+
+
+# 11/24
+
+- HTTP requests must ends with `\r\n`
+
+HTTP request can be made from places other than the browser.
+
+```
+$ nc clac.cs.columbia.edu 80
+GET / HTTP/1.0
+```
+
+
+
+# 12/1
+
+Some useful commands
+
+`rsync -avz tcp-recver.c UNI@clac.cs.columbia.edu:/path/to/folder/`
+
+`dig address` (returns IP)
